@@ -40,6 +40,3 @@ except Exception as e:
     pass
 finally:
     print_stats(total_f_size, s_code)
-
-if __name__ == "__main__":
-    stats()
