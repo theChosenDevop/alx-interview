@@ -1,5 +1,5 @@
 # 0x01-lockboxes
-# [0x01-lockboxes] (https://github.com/theChosenDevop/alx-interview/blob/master/0x01-lockboxes/0-lockboxes.py)
+[0x01-lockboxes](https://github.com/theChosenDevop/alx-interview/blob/master/0x01-lockboxes/0-lockboxes.py)
 >  n number of locked boxes in front of you. Each box is numbered sequentially from 0 to n - 1 and each box may contain keys to the other boxes.
 > Function determines if all the boxes can be opened
 > Boxes is a list of lists
