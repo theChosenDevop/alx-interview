@@ -5,25 +5,29 @@
 def island_perimeter(grid):
     """
     Defines function too find perimter of a grid
+    land[1] and water[0]
     Args:
        grid [list]: List of integers
     """
-    grid_len = len(grid)
-    perimeter = 4 * count_ones_in(grid, grid_len)
+    rows = len(grid)
+    col = len(grid[0])
+
+    perimeter = 0
+
+    for x in range(rows):
+        for y in range(col):
+            # check if it is land
+            if grid[x][y] == 1:
+                # check if it is water
+                if x == 0 or grid[x - 1][y] == 0:
+                    perimeter += 1
+                # check if below is water
+                if x == rows - 1 or grid[x + 1][y] == 0:
+                    perimeter += 1
+                # check if left is water
+                if y == 0 or grid[x][y - 1] == 0:
+                    perimeter += 1
+                # check if right is water
+                if y == col - 1 or grid[x][y+1] == 0:
+                    perimeter += 1
     return perimeter
-
-
-def count_ones_in(grid, iter):
-    """
-    Counts one as land and returns count
-    Args:
-       grid [List]: Grid of list of integers
-       iter [int]: integer
-    """
-    count = 0
-    for i in range(iter):
-        for row in grid:
-            if row[i] == 1:
-                count = count + 1
-                break
-    return count
