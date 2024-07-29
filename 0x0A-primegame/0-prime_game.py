@@ -2,27 +2,6 @@
 """ isWinner Module """
 
 
-def counting(num):
-    """ num [int]: integer
-        Returns: Composite numbers
-    """
-    return [i for i in range(2, num + 1)]
-
-
-def is_prime(n):
-    """ checks the prime of integers
-        Paramters:
-            n [int]: integer
-        Returns: boolean
-    """
-    if n <= 1:
-        return False
-    for i in range(2, int(n ** 0.5) + 1):
-        if n % i == 0:
-            return False
-    return True
-
-
 def isWinner(x, nums):
     """ It iterates through an array of integers and picks
         prime numbers
@@ -33,30 +12,53 @@ def isWinner(x, nums):
 
     Returns: player with most win
     """
-    x_count, y_count = 0, 0
-    x_turn = True
+    def sieveOfEratosthenes(max_n):
+        """ create a boolean array 'prime[0:max_n]' and initialize all
+            entries as true
 
-    for _ in range(x):
-        for i in nums:
-            arr = counting(i)
-            while arr:
-                for num in arr:
-                    if is_prime(num):
-                        prime = num
-                        break
-                else:
-                    break
+            prime[i] will be false if not a prime or else true
+        """
+        prime = [True for _ in range(max_n + 1)]
+        p = 2
+        while (p * p <= max_n):
+            if prime[p] is True:
+                for i in range(p * p, max_n + 1, p):
+                    prime[i] = False
+            p += 1
+        return [p for p in range(2, max_n + 1) if prime[p]]
 
-                if x_turn:
-                    x_count += 1
-                else:
-                    y_count += 1
+    def playGame(n):
+        if n == 1:
+            return "Ben"
+        primes = sieveOfEratosthenes(n)
+        remaining = set(range(1, n + 1))
+        turn = 0
+        while primes:
+            curPrime = primes.pop(0)
+            for multiple in range(curPrime, n + 1, curPrime):
+                if multiple in remaining:
+                    remaining.remove(multiple)
+            primes = [p for p in primes if p in remaining]
+            turn = 1 - turn
+        return "Ben" if turn == 0 else "Maria"
 
-                arr = [n for n in arr if n % prime != 0]
 
-                x_turn = not x_turn
+    if x <= 0 or not nums:
+        return None
 
-    if x_count > y_count:
+    mariaWins = 0
+    benWins = 0
+
+    for n in nums:
+        winner = playGame(n)
+        if winner == "Maria":
+            mariaWins += 1
+        else:
+            benWins +=1
+
+    if mariaWins > benWins:
         return "Maria"
-    else:
+    elif benWins > mariaWins:
         return "Ben"
+    else:
+        return None
