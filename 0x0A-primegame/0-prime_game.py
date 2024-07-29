@@ -42,7 +42,6 @@ def isWinner(x, nums):
             turn = 1 - turn
         return "Ben" if turn == 0 else "Maria"
 
-
     if x <= 0 or not nums:
         return None
 
@@ -54,7 +53,7 @@ def isWinner(x, nums):
         if winner == "Maria":
             mariaWins += 1
         else:
-            benWins +=1
+            benWins += 1
 
     if mariaWins > benWins:
         return "Maria"
