@@ -4,39 +4,64 @@
 """
 import sys
 
-
-def getLine(line):
-    """Get line for stdin"""
-    split_line = line.split()
-    f_size = int(split_line[-1])
-    s_code = int(split_line[-2])
-    return f_size, s_code
+allowed_status_code = {200, 301, 400, 401, 403, 404, 405, 500}
 
 
-def print_stats(f_size, s_code_count):
-    """Return output of status code and count"""
-    print("File size: {}".format(f_size))
-    for code in sorted(s_code_count.keys()):
+def parse_line(line):
+    """Process each line to extract status code
+     and file size.
+     """
+    parts = line.split()
+    if len(parts) < 7:
+        return None, None
+
+    try:
+        f_size = int(parts[-1])
+    except ValueError:
+        return None, None
+
+    try:
+        s_code = int(parts[-2])
+        if s_code in allowed_status_code:
+            return s_code, f_size
+    except ValueError:
+        pass
+
+    return None, f_size
+
+
+def print_stats(total_fs, s_code_count):
+    """Prints the accumulated stats.
+    """
+    print("File size: {}".format(total_fs))
+    for code in sorted(s_code_count):
         print("{}: {}".format(code, s_code_count[code]))
 
 
-try:
-    """Logs the status codes"""
-    line_count = 0
-    total_f_size = 0
+def main():
+    total_fs = 0
     s_code_count = {}
+    line_count = 0
 
-    for line in sys.stdin:
-        f_size, s_code = getLine(line)
+    try:
+        for line in sys.stdin:
+            s_code, f_size = parse_line(line.rstrip())
+            if f_size is not None:
+                total_fs += f_size
+            if s_code is not None:
+                s_code_count[s_code] = s_code_count.get(s_code, 0) + 1
 
-        if f_size is not None and s_code is not None:
-            total_f_size += f_size
-            s_code_count[s_code] = s_code_count.get(s_code, 0) + 1
+            line_count += 1
 
-        line_count += 1
-        if line_count == 10:
-            print_stats(total_f_size, s_code_count)
-            line_count = 0
+            if line_count == 10:
+                print_stats(total_fs, s_code_count)
+                line_count = 0
+    except KeyboardInterrupt:
+        print_stats(total_fs, s_code_count)
+        raise
 
-except KeyboardInterrupt:
-    print_stats(total_f_size, s_code)
+    print_stats(total_fs, s_code_count)
+
+
+if __name__ == "__main__":
+    main()
